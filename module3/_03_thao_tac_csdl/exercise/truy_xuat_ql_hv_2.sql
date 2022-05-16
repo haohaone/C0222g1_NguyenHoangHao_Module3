@@ -28,19 +28,18 @@ SELECT `order`.order_id, `order`.order_date, product.product_price FROM order_de
 JOIN `order` ON `order`.order_id = order_detail.order_id
 JOIN product ON product.product_id = order_detail.product_id; 
 
-SELECT * FROM `order`
-JOIN order_detail ON  order_detail.order_id = `order`.order_id
-WHERE EXISTS 
-(SELECT * FROM order_detail WHERE order_detail.order_id = `order`.order_id);
+SELECT `order`.order_id, `order`.order_date, customer.cus_id, customer.cus_name, product.product_name FROM order_detail 
+JOIN `order` ON `order`.order_id = order_detail.order_id
+JOIN product ON product.product_id = order_detail.product_id
+JOIN customer ON `order`.cus_id = customer.cus_id
+WHERE customer.cus_id  IN (SELECT cus_id  FROM `order` ); 
+
+-- SELECT customer.cus_name, customer.cus_id FROM customer
+-- WHERE customer.cus_id  NOT IN (SELECT cus_id  FROM `order` );
 
 SELECT customer.cus_name, customer.cus_id FROM customer
 WHERE NOT EXISTS 
 (SELECT * FROM `order` WHERE customer.cus_id = `order`.cus_id);
-
-SELECT * FROM `order`
-JOIN order_detail ON  order_detail.order_id = `order`.order_id
-WHERE EXISTS 
-(SELECT * FROM order_detail WHERE order_detail.order_id  = 1 AND `order`.order_id = 1);
 
 SELECT `order`.order_id, `order`.order_date, sum(`order_detail`.od_qty * product.product_id) AS order_total_price  FROM order_detail 
 JOIN `order` ON order_detail.order_id = `order`.order_id
