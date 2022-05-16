@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS class (
 
 CREATE TABLE IF NOT EXISTS student(
 	id_student INT 					AUTO_INCREMENT PRIMARY KEY,
-    `name_class` VARCHAR(30) 		NOT NULL,
+    `name_student` VARCHAR(30) 		NOT NULL,
     address VARCHAR(50),
     phone VARCHAR(20),
     `status` BIT,
@@ -29,11 +29,9 @@ CREATE TABLE IF NOT EXISTS `subject`(
 
 CREATE TABLE IF NOT EXISTS mark(
 	id_mark INT 					AUTO_INCREMENT PRIMARY KEY,
-    id_sub INT 						NOT NULL UNIQUE KEY,
-    id_student INT 					NOT NULL UNIQUE KEY,
-    mark FLOAT DEFAULT 0 CHECK ( mark BETWEEN 0 AND 100)
+    id_sub INT 						NOT NULL ,
+    id_student INT 					NOT NULL ,
+    mark FLOAT DEFAULT 0 CHECK ( mark BETWEEN 0 AND 100),
+    CONSTRAINT fk_id_sub FOREIGN KEY (id_sub) REFERENCES `subject`(id_sub),
+	CONSTRAINT fk_id_student FOREIGN KEY (id_student) REFERENCES student(id_student)
 );
-
-ALTER TABLE mark
-ADD CONSTRAINT fk_id_sub FOREIGN KEY (id_sub) REFERENCES `subject`(id_sub),
-ADD CONSTRAINT fk_id_student FOREIGN KEY (id_student) REFERENCES student(id_student);

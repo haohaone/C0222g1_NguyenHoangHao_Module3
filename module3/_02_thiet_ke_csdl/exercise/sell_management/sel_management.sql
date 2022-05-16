@@ -10,9 +10,9 @@ CREATE TABLE customer(
 
 CREATE TABLE `order`(
 	order_id INT AUTO_INCREMENT PRIMARY KEY,
-    cus_id INT NOT NULL,
+    cus_id INT,
     order_date DATE NOT NULL,
-    order_total_price INT NOT NULL,
+    order_total_price INT,
     CONSTRAINT fk_cus_id FOREIGN KEY (cus_id) REFERENCES customer (cus_id)
 );
 
@@ -25,6 +25,7 @@ CREATE TABLE product(
 CREATE TABLE order_detail(
 	order_id INT,
     product_id INT,
+    od_qty INT,
     PRIMARY KEY (order_id, product_id),
     CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES `order` (order_id),
     CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES product (product_id)

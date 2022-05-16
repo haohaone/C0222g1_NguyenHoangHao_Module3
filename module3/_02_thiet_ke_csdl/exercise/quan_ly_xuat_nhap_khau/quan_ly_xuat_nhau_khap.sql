@@ -11,8 +11,8 @@ CREATE TABLE quan_ly_ncc (
 CREATE TABLE sdt_ncc(
 	sdt_ban VARCHAR(20),
     sdt_dt VARCHAR(20),
-    ma_ncc VARCHAR(20) PRIMARY KEY,
-    CONSTRAINT fk_ma_ncc_sdt FOREIGN KEY (ma_ncc) REFERENCES quan_ly_ncc (ma_ncc)
+    ma_ncc VARCHAR(20),
+    CONSTRAINT fk_ma_sdt_ncc FOREIGN KEY (ma_ncc) REFERENCES quan_ly_ncc (ma_ncc)
 );
 
 CREATE TABLE vat_tu(
