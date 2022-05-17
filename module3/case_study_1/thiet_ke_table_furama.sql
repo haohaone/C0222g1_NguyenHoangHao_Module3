@@ -30,7 +30,7 @@ CREATE TABLE dich_vu(
 
 CREATE TABLE loai_khach(
 	ma_loai_khach INT AUTO_INCREMENT PRIMARY KEY,
-    ten_khach_hang VARCHAR(50)
+    loai_khach_hang VARCHAR(50)
 );
 
 CREATE TABLE khach_hang(

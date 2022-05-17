@@ -41,7 +41,8 @@ SELECT customer.cus_name, customer.cus_id FROM customer
 WHERE NOT EXISTS 
 (SELECT * FROM `order` WHERE customer.cus_id = `order`.cus_id);
 
-SELECT `order`.order_id, `order`.order_date, sum(`order_detail`.od_qty * product.product_id) AS order_total_price  FROM order_detail 
+SELECT `order`.order_id, `order`.order_date, sum(`order_detail`.od_qty * product.product_price) AS order_total_price  FROM order_detail 
 JOIN `order` ON order_detail.order_id = `order`.order_id
 JOIN product ON product.product_id = order_detail.product_id
+JOIN customer ON customer.cus_id = `order`.cus_id
 GROUP BY order_id
