@@ -1,0 +1,16 @@
+h1{
+    text-align: left;
+}
+p{
+    font-size: larger;
+    text-indent: 2em;
+}
+.black{
+    font-weight: 700;
+}
+.sky{
+    color: #6e93ff;
+}
+.blue{
+    color: blue;
+}

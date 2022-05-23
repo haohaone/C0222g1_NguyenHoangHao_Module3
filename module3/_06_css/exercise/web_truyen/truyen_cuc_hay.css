@@ -1,0 +1,62 @@
+img{
+    width: 3.5em;
+    height: 3.5em;
+}
+
+body{
+    margin-top: 0;
+    margin-left: 0;
+    width: 100%;
+    background-color: rgba(224,255,207,0.73);
+}
+
+h2{
+    color: rgba(27,106,103,0.73);
+}
+
+#content{
+    width: 100%;
+    position: relative;
+    top: 66px;
+}
+
+#tieude1{
+    top: 0;
+    width: 100%;
+    background-color: rgba(206,255,219,0.73);
+    position: fixed;
+    z-index: 1;
+    height: 66px;
+}
+
+#tieude2{
+    position: relative;
+    top: 5px;
+}
+
+#tieude3 {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: rgba(27,106,103,0.73);
+    margin-left: 35%;
+    position: relative;
+    bottom: 10px;
+}
+
+#tieude4 {
+    font-size: 1em;
+    width: 5%;
+    margin-left: 34%;
+    position: relative;
+    bottom: 18px;
+}
+
+.height_width {
+    width: 10em;
+    height: 13em;
+
+}
+
+.display {
+    margin-right: 60px;
+}
