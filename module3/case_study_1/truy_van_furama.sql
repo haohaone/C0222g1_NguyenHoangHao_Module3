@@ -132,12 +132,12 @@ GROUP BY hdct.ma_dich_vu_dinh_kem;
 -- Khách hàng đã đặt phòng. (Lưu ý là có thể có nhiều dịch vụ có số lần sử
 -- dụng nhiều như nhau).
 
-SELECT dvdk.ma_dich_vu_dinh_kem, dvdk.ten_dich_vu_dinh_kem, dvdk.gia, count(dvdk.ma_dich_vu_dinh_kem)AS so_luong_su_dung_nhieu_nhat, hd.ma_hop_dong 
+SELECT dvdk.ma_dich_vu_dinh_kem, dvdk.ten_dich_vu_dinh_kem, dvdk.gia, sum(hdct.so_luong)AS so_luong_su_dung_nhieu_nhat, hd.ma_hop_dong 
 FROM hop_dong_chi_tiet hdct 
 JOIN dich_vu_dinh_kem AS dvdk ON dvdk.ma_dich_vu_dinh_kem = hdct.ma_dich_vu_dinh_kem
 JOIN hop_dong AS hd ON hd.ma_hop_dong = hdct.ma_hop_dong
 GROUP BY dvdk.ma_dich_vu_dinh_kem
-HAVING so_luong_su_dung_nhieu_nhat = (SELECT count(ma_dich_vu_dinh_kem) AS so_luong FROM hop_dong_chi_tiet GROUP BY ma_dich_vu_dinh_kem ORDER BY so_luong LIMIT 1);
+HAVING so_luong_su_dung_nhieu_nhat = (SELECT sum(hdct.so_luong) AS so_luong FROM hop_dong_chi_tiet AS hdct GROUP BY ma_dich_vu_dinh_kem ORDER BY so_luong DESC LIMIT 1);
 
 -- 14. Hiển thị thông tin tất cả các Dịch vụ đi kèm chỉ mới được sử dụng một
 -- lần duy nhất. Thông tin hiển thị bao gồm ma_hop_dong,
@@ -156,12 +156,13 @@ GROUP BY dvdk.ma_dich_vu_dinh_kem HAVING count(dvdk.ma_dich_vu_dinh_kem) = 1;
 -- ten_trinh_do, ten_bo_phan, so_dien_thoai, dia_chi mới chỉ lập được
 -- tối đa 3 hợp đồng từ năm 2020 đến 2021.
 
-SELECT nv.ma_nhan_vien, nv.ho_ten, td.ten_trinh_do, bp.ten_bo_phan, nv.so_dien_thoai, nv.dia_chi, count(nv.ma_nhan_vien) AS so_lan_lap_hop_dong FROM nhan_vien nv
-JOIN hop_dong hd ON hd.ma_nhan_vien = nv.ma_nhan_vien
+SELECT nv.ma_nhan_vien, nv.ho_ten, td.ten_trinh_do, bp.ten_bo_phan, nv.so_dien_thoai, nv.dia_chi, count(nv.ma_nhan_vien) AS so_lan_lap_hop_dong FROM hop_dong hd
+JOIN nhan_vien nv ON hd.ma_nhan_vien = nv.ma_nhan_vien
 JOIN trinh_do td ON td.ma_trinh_do = nv.ma_trinh_do
 JOIN bo_phan bp ON bp.ma_bo_phan = nv.ma_bo_phan
+WHERE year(hd.ngay_lam_hop_dong) IN (2020, 2021)
 GROUP BY hd.ma_nhan_vien 
-HAVING so_lan_lap_hop_dong <= 3 AND nv.ma_nhan_vien IN (SELECT ma_nhan_vien FROM hop_dong WHERE year(ngay_lam_hop_dong) IN (2020, 2021));
+HAVING so_lan_lap_hop_dong <= 3;
 
 -- 16. Xóa những Nhân viên chưa từng lập được hợp đồng nào từ năm 2019
 -- đến năm 2021. 
@@ -178,15 +179,100 @@ UPDATE khach_hang
 SET ma_loai_khach = 1 
 WHERE ma_loai_khach = 2 
 AND ma_khach_hang IN 
-(SELECT kh.ma_khach_hang FROM hop_dong  AS hd
+(SELECT hd.ma_khach_hang FROM hop_dong  AS hd
  JOIN hop_dong_chi_tiet AS hdct ON hdct.ma_hop_dong = hd.ma_hop_dong
  JOIN dich_vu_dinh_kem AS dvdk ON dvdk.ma_dich_vu_dinh_kem = hdct.ma_dich_vu_dinh_kem
  JOIN dich_vu AS dv ON dv.ma_dich_vu = hd.ma_dich_vu
- JOIN khach_hang AS kh ON kh.ma_khach_hang = hd.ma_hop_dong
- WHERE dv.chi_phi_thue + (hdct.so_luong * dvdk.gia) > 3500);
+ WHERE year(ngay_lam_hop_dong) = 2021
+ GROUP BY hd.ma_khach_hang
+ HAVING sum(dv.chi_phi_thue + (hdct.so_luong * dvdk.gia)) > 3500);
  
 -- 18.Xóa những khách hàng có hợp đồng trước năm 2021 (chú ý ràng buộc
 -- giữa các bảng).
  
-DELETE FROM khach_hang 
-WHERE khach_hang.ma_khach_hang NOT IN (SELECT ma_khach_hang FROM hop_dong WHERE year(ngay_lam_hop_dong) = 2021);
+CREATE VIEW khach_hang_truoc_nam_2021 AS
+SELECT ma_khach_hang FROM hop_dong 
+WHERE year(ngay_lam_hop_dong) < 2021  GROUP BY ma_khach_hang;
+
+UPDATE hop_dong_chi_tiet
+SET ma_hop_dong = NULL
+WHERE ma_hop_dong IN (SELECT ma_hop_dong FROM hop_dong WHERE ma_khach_hang IN (SELECT * FROM khach_hang_truoc_nam_2021));
+ 
+UPDATE hop_dong
+SET ma_khach_hang = NULL
+WHERE ma_khach_hang IN (SELECT * FROM khach_hang_truoc_nam_2021);
+
+DELETE FROM khach_hang
+WHERE ma_khach_hang IN (SELECT * FROM khach_hang_truoc_nam_2021);
+
+-- 19. Cập nhật giá cho các dịch vụ đi kèm được sử dụng trên 10 lần trong
+-- năm 2020 lên gấp đôi.
+
+UPDATE dich_vu_dinh_kem
+SET gia = gia * 2
+WHERE ma_dich_vu_dinh_kem IN 
+(SELECT ma_dich_vu_dinh_kem FROM hop_dong_chi_tiet
+GROUP BY ma_dich_vu_dinh_kem HAVING count(ma_hop_dong_chi_tiet) >= 3);
+
+-- 20. Hiển thị thông tin của tất cả các nhân viên và khách hàng có trong hệ
+-- thống, thông tin hiển thị bao gồm id (ma_nhan_vien, ma_khach_hang),
+-- ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi.
+
+SELECT ma_nhan_vien AS id, ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi FROM nhan_vien
+UNION
+SELECT ma_khach_hang, ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi FROM khach_hang;
+
+-- 21. Tạo khung nhìn có tên là v_nhan_vien để lấy được thông tin của tất cả
+-- các nhân viên có địa chỉ là “Quảng Bình” và đã từng lập hợp đồng cho một
+-- hoặc nhiều khách hàng bất kì với ngày lập hợp đồng là “2020”.
+
+CREATE VIEW task_21 AS
+SELECT * FROM nhan_vien 
+WHERE dia_chi = 'Quảng Bình' AND ma_nhan_vien IN 
+(SELECT ma_nhan_vien FROM hop_dong WHERE year(ngay_lam_hop_dong) = 2020);
+
+SELECT * FROM task_21;
+
+-- 22. Thông qua khung nhìn v_nhan_vien thực hiện cập nhật địa chỉ thành
+-- “Đà Nẵng” đối với tất cả các nhân viên được nhìn thấy bởi khung nhìn
+-- này.
+
+UPDATE task_21
+SET dia_chi = 'Đà Nẵng'
+
+-- 23. Tạo Stored Procedure sp_xoa_khach_hang dùng để xóa thông tin của
+-- một khách hàng nào đó với ma_khach_hang được truyền vào như là 1
+-- tham số của sp_xoa_khach_hang.
+
+DELIMITER \\
+CREATE PROCEDURE delete_khach_hang_by_id(IN set_id INT)
+BEGIN
+	UPDATE hop_dong_chi_tiet
+	SET ma_hop_dong = NULL
+	WHERE ma_hop_dong IN 
+    (SELECT ma_hop_dong FROM hop_dong 
+    WHERE ma_khach_hang = set_id
+    );
+ 
+	UPDATE hop_dong
+	SET ma_khach_hang = NULL
+	WHERE ma_khach_hang = set_id;
+
+	DELETE FROM khach_hang
+	WHERE ma_khach_hang = set_id;
+END\\
+DELIMITER ;
+
+CALL delete_khach_hang_by_id(1);
+
+-- 24. Tạo Stored Procedure sp_them_moi_hop_dong dùng để thêm mới vào
+-- bảng hop_dong với yêu cầu sp_them_moi_hop_dong phải thực hiện
+-- kiểm tra tính hợp lệ của dữ liệu bổ sung, với nguyên tắc không được
+-- trùng khóa chính và đảm bảo toàn vẹn tham chiếu đến các bảng liên
+-- quan.
+
+CREATE PROCEDURE delete_khach_hang_by_id(IN set_id INT)
+BEGIN
+	INSERT INTO hop_dong
+END\\
+DELIMITER ;

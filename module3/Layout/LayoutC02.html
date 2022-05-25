@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .col-md-1 {width: 8.33333%;}
+        .col-md-2 {width: 16.66667%;}
+        .col-md-3 {width: 25%;}
+        .col-md-4 {width: 33.33333%;}
+        .col-md-5 {width: 41.66667%;}
+        .col-md-6 {width: 50%;}
+        .col-md-7 {width: 58.33333%;}
+        .col-md-8 {width: 66.66667%;}
+        .col-md-9 {width: 75%;}
+        .col-md-10 {width: 83.33333%;}
+        .col-md-11 {width: 91.66667%;}
+        .col-md-12 {width: 100%;}
+
+        .row{
+            display: flex;
+            /*flex-wrap: wrap;*/
+        }
+        .header, .footer{
+            background: orange;
+            height: 30px;
+        }
+        .left{
+            background: #0f6674;
+        }
+        .right{
+            background: #0f6674;
+
+        }
+        .contain{
+            background: #7abaff;
+        }
+    </style>
+</head>
+<body>
+<div class="row header"> Header</div>
+<div class="row">
+    <div class="col-md-2 left">
+        Left
+    </div>
+    <div class="col-md-8 contain">
+        <div class="row">
+            <div class="col-md-4">
+                Hình ảnh
+            </div>
+            <div class="col-md-8">
+                <div class="row">Title</div>
+                <div class="row">
+                    <div class="col-md-6">Hello</div>
+                    <div class="col-md-6">Đà nẵng</div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">Content</div>
+    </div>
+    <div class="col-md-2 right">
+        Right
+    </div>
+</div>
+<div class="row footer">Footer</div>
+</body>
+</html>
