@@ -49,14 +49,31 @@
     <div class="container main ">
         <form action="calculator" method="get" class="content border-0">
             <div class="row h-100 content">
-                <div class="col-md-3">&nbsp;</div>
-                <div class="col-md-6 ">
+                <div class="col-md-3 h-50">&nbsp;</div>
+                <div class="col-md-6 h-50">
                     <div class="card ">
-                        <div class="col-md-12 card-header bg-dark border-0">
+                        <div class="col-md-12 card-header bg-dark border-0 ">
                             <input class="input-group border-0 bg-dark calculator h-50" name="result" id="result" placeholder="0"
                             value="${result}">
                         </div>
                         <div class="card-body border-0 bg-secondary">
+                            <div>
+                                <div class="row col-md-12 p-0 m-0 pb-3">
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn num bg-dark calculator" onclick="deleteValue()">DEL</button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn num bg-dark calculator" onclick="addMark('(')">(</button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn num bg-dark calculator" onclick="addMark(')')">)</button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn mark bg-dark calculator" onclick="addMark('%')">%</button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
                                 <div class="row col-md-12 p-0 m-0 pb-3">
                                     <div class="col-md-3">
@@ -105,11 +122,8 @@
                             </div>
 
                             <div class="row col-md-12 p-0 m-0 pb-3">
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <button type="button" class="btn num bg-dark calculator" onclick="addNum(0)">0</button>
-                                </div>
-                                <div class="col-md-3">
-                                    <button type="button" class="btn num bg-dark calculator" onclick="deleteValue()">DEL</button>
                                 </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn mark bg-dark calculator">=</button>
@@ -121,7 +135,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">&nbsp;</div>
+                <div class="col-md-3 h-50">&nbsp;</div>
             </div>
         </form>
     </div>
