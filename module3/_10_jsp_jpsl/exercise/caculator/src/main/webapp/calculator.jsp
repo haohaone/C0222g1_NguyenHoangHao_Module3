@@ -6,10 +6,11 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link href="css/bootstrap.min.css" rel="stylesheet">
+
 <html>
 <head>
     <title>Calculator</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         button{
             width: 100%;
@@ -51,9 +52,9 @@
             <div class="row h-100 content">
                 <div class="col-md-3 h-50">&nbsp;</div>
                 <div class="col-md-6 h-50">
-                    <div class="card ">
+                    <div class="card">
                         <div class="col-md-12 card-header bg-dark border-0 ">
-                            <input class="input-group border-0 bg-dark calculator h-50" name="result" id="result" placeholder="0"
+                            <input class="input-group border-0 bg-dark h-50 calculator" name="result" id="result" placeholder="0"
                             value="${result}">
                         </div>
                         <div class="card-body border-0 bg-secondary">

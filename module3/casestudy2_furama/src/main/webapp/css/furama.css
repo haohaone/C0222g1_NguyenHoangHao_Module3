@@ -1,0 +1,58 @@
+.back-group{
+    background-image: url(../img/furama2.jpg);
+    background-size: cover;
+}
+
+.center-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#head{
+    height: 5rem;
+}
+
+.logo{
+    width: 4.5rem;
+    height: 4.5rem;
+}
+
+.home:hover{
+    color: black;
+    text-decoration-line: none;
+    background: #e3f2fd;
+}
+.button-menu {
+    color: black;
+    font-size: 1.125rem;
+    border: 0;
+    background: white;
+}
+
+.button-menu:hover{
+    color: black;
+    text-decoration-line: none;
+    background: #e3f2fd;
+    border-radius: 0.188rem;
+}
+
+.dropdown-item-custom{
+    color: black;
+    border: 0;
+    background: white;
+}
+
+.dropdown-item-custom:hover{
+    color: black;
+    text-decoration-line: none;
+    background: #e3f2fd;
+}
+
+.home{
+    color: black;
+    font-weight: 500;
+    font-size: 1.438rem;
+    border: 0;
+    background: white;
+}

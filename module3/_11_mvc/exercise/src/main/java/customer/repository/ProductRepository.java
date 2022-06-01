@@ -9,9 +9,9 @@ public interface ProductRepository {
 
     Product findById(int id);
 
-    void save(int index, Product product);
+    void save(Product product);
 
-    void update(int index, Product product);
+    void update(Product product);
 
     void delete(int id);
 }

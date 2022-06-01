@@ -100,10 +100,10 @@
                 </tr>
             </c:if>
 
-            <c:if test="${delteSuccessful != null}">
+            <c:if test="${deleteSuccessful != null}">
                 <tr>
                     <th colspan="7">
-                        <div class="text-warning font-weight-bold">${delteSuccessful}</div>
+                        <div class="text-warning font-weight-bold">${deleteSuccessful}</div>
                     </th>
                 </tr>
             </c:if>
@@ -119,9 +119,8 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark">
-                    <a id="deleteProduct" onclick="productIndex()" href="#"
-                       class="text-white">Xóa</a>
+                <button type="button" class="btn btn-dark" onclick="productIndex2()">
+                    <a id="deleteProduct" class="text-white">Xóa</a>
                 </button>
                 <button type="button" class="btn btn-dark " data-dismiss="modal">Hủy</button>
             </div>
@@ -158,9 +157,13 @@
 </div>
 </body>
 <script>
+    var id;
     function productIndex(index) {
-        let link = "/product?action=delete&id=" + index;
-        $("#deleteProduct").attr("href", link);
+        id = index;
+    };
+
+    function productIndex2() {
+        let link = "/product?action=delete&id=" + id;
         window.location.href =link;
     };
 </script>

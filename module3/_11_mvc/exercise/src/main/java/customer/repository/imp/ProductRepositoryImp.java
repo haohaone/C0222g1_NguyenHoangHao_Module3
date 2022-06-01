@@ -1,49 +1,128 @@
 package customer.repository.imp;
 
 import customer.model.Product;
+import customer.repository.BaseRepository;
 import customer.repository.ProductRepository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class ProductRepositoryImp implements ProductRepository {
-    private static Map<Integer, Product> productList = new LinkedHashMap<>();
-    static {
-        productList.put(1,new Product(1, "IP-11", "Iphone 11", "Apple", "Thế giới di dộng", 0));
-        productList.put(2,new Product(2, "IP-XS", "Iphone XS", "Apple", "Điện máy xanh", 0));
-        productList.put(3, new Product(3, "IP-13", "Iphone 13", "Apple", "Schannel", 0));
-        productList.put(4, new Product(4, "SS-A7", "Samsung-A7", "Samsung", "Thế giới di dộng", 0));
-        productList.put(5, new Product(5, "SS-B3", "Samsung-B3", "Samsung", "Điện máy xanh",0));
-        productList.put(6, new Product(6, "HW-K11", "Huawei-K11", "Huawei", "Thế giới di dộng", 0));
-    }
+    private final String SELECT_ALL ="SELECT * FROM product";
+    private final String INSERT_STUDENT ="insert into student(`name`,birthday, gender,`point`, class_id,email,`account`) " +
+            "values (?,?,?,?,?,?,?);";
 
     @Override
     public List<Product> productList() {
-        List<Product> products = new LinkedList<>(productList.values());
+        List<Product> products = new LinkedList<>();
+        Connection connection = BaseRepository.getConnectDB();
+        try {
+            PreparedStatement ps = connection.prepareStatement(SELECT_ALL);
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()){
+                int productIndex = resultSet.getInt("product_index");
+                String productId = resultSet.getString("product_code");
+                String productName = resultSet.getString("product_name");
+                String productionName = resultSet.getString("production_name");
+                String distributorName = resultSet.getString("distributor_name");
+                int statusDelete = resultSet.getInt("status_delete");
+                products.add( new Product(productIndex,
+                                            productId,
+                                            productName,
+                                            productionName,
+                                            distributorName,
+                                            statusDelete));
+                }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return products;
     }
 
     @Override
     public Product findById(int id) {
-        return productList.get(id);
+        String selectById = SELECT_ALL + " WHERE product_index = " + id;
+        Connection connection = BaseRepository.getConnectDB();
+        Product product = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement(selectById);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            int productIndex = resultSet.getInt("product_index");
+            String productId = resultSet.getString("product_code");
+            String productName = resultSet.getString("product_name");
+            String productionName = resultSet.getString("production_name");
+            String distributorName = resultSet.getString("distributor_name");
+            int statusDelete = resultSet.getInt("status_delete");
+             product = new Product(productIndex,
+                                    productId,
+                                    productName,
+                                    productionName,
+                                    distributorName,
+                                    statusDelete);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return product;
     }
 
     @Override
-    public void save(int index, Product product) {
-        productList.put(index, product);
+    public void update(Product product) {
+        String saveByID = "UPDATE product" +
+                            " SET product_code = ?, product_name = ?, production_name = ?," +
+                            " distributor_name = ?, status_delete = ? WHERE  product_index = ?";
+        Connection connection = BaseRepository.getConnectDB();
+        try {
+            PreparedStatement ps = connection.prepareStatement(saveByID);
+            ps.setString(1, product.getProductId());
+            ps.setString(2, product.getProductName());
+            ps.setString(3, product.getProductionName());
+            ps.setString(4, product.getDistributorName());
+            ps.setInt(5, product.getStatusDelete());
+            ps.setInt(6, product.getIndex());
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
-    public void update(int index, Product product) {
-        productList.put(index, product);
+    public void save(Product product) {
+        String updateByID = "INSERT INTO product" +
+                "(product_code, pưroduct_name, production_name, distributor_name, status_delete)" +
+                " VALUE (?, ?, ?, ?, ?)";
+        Connection connection = BaseRepository.getConnectDB();
+        try {
+            PreparedStatement ps = connection.prepareStatement(updateByID);
+            ps.setString(1, product.getProductId());
+            ps.setString(2, product.getProductName());
+            ps.setString(3, product.getProductionName());
+            ps.setString(4, product.getDistributorName());
+            ps.setInt(5, product.getStatusDelete());
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
     public void delete(int id) {
-        System.out.println(id);
-        Product product = productList.get(id);
-        product.setStatusDelete(1);
+        Product product = findById(id);
+        String deleteByID = "UPDArTE product" +
+                " SET status_delete = 1 WHERE  product_index = ?";
+        Connection connection = BaseRepository.getConnectDB();
+        try {
+            PreparedStatement ps = connection.prepareStatement(deleteByID);
+            ps.setInt(1, product.getIndex());
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

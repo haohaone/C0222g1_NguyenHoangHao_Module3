@@ -1,0 +1,35 @@
+.back-group{
+    background-image: url(../img/furama2.jpg);
+    background-size: cover;
+
+}
+
+.login{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.logo{
+    width: 3.75rem;
+    height: 3.75rem;
+}
+
+.title{
+    font-size: 1.875rem;
+    font-weight: 500;
+}
+
+.login-fail{
+    color: #712b29;
+    background-color: #f7dddc;
+    border-color: #f4cfce;
+    border-radius: 0.215rem;
+    height: 2.25rem;
+}
+
+@media only screen and (min-width: 370px ) {
+    .main-content{
+
+    }
+}
